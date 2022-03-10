@@ -5,13 +5,14 @@ See the file 'doc/LICENSE' for the license information
 
 """
 import json
+import re
 from faraday_plugins.plugins.plugin import PluginJsonFormat
 
 __author__ = "Blas Moyano"
 __copyright__ = "Copyright (c) 2020, Infobyte LLC"
 __credits__ = ["Blas Moyano"]
 __license__ = ""
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __maintainer__ = "Blas Moyano"
 __email__ = "bmoyano@infobytesec.com"
 __status__ = "Development"
@@ -54,8 +55,9 @@ class WhatWebPlugin(PluginJsonFormat):
         super().__init__(*arg, **kwargs)
         self.id = "whatweb"
         self.name = "WhatWebPlugin"
-        self.plugin_version = "0.1"
-        self.version = "0.0.1"
+        self.plugin_version = __version__
+        self._command_regex = re.compile(r'^(sudo whatweb|whatweb|\.\/whatweb)\s+.*?')
+        self.version = "0.5.5"
         self.json_keys = {'target', 'http_status', 'plugins'}
 
 
