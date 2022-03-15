@@ -12,7 +12,7 @@ __author__ = "Blas Moyano"
 __copyright__ = "Copyright (c) 2020, Infobyte LLC"
 __credits__ = ["Blas Moyano"]
 __license__ = ""
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 __maintainer__ = "Blas Moyano"
 __email__ = "bmoyano@infobytesec.com"
 __status__ = "Development"
@@ -57,9 +57,27 @@ class WhatWebPlugin(PluginJsonFormat):
         self.name = "WhatWebPlugin"
         self.plugin_version = __version__
         self._command_regex = re.compile(r'^(sudo whatweb|whatweb|\.\/whatweb)\s+.*?')
+        self._use_temp_file = True
+        self._temp_file_extension = "json"
         self.version = "0.5.5"
+        self.json_arg_re = re.compile(r"^.*(--log-json(=|[\s*])[^\s]+).*$")
         self.json_keys = {'target', 'http_status', 'plugins'}
 
+    def processCommandString(self, username, current_path, command_string):
+        """
+        Adds the --json-log parameter to get json output to the command string that the
+        user has set.
+        """
+        super().processCommandString(username, current_path, command_string)
+        arg_match = self.json_arg_re.match(command_string)
+        if arg_match is None:
+            return re.sub(r"(^.*?whatweb)",
+                          r"\1 --log-json %s" % self._output_file_path,
+                          command_string)
+        else:
+            return re.sub(arg_match.group(1),
+                          r"--log-json %s" % self._output_file_path,
+                          command_string)
 
     def parseOutputString(self, output):
         parser = WhatWebJsonParser(output)
