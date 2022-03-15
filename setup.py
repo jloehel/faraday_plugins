@@ -15,7 +15,7 @@ install_requires = [
     'pytz',
     'python-dateutil',
     'colorama',
-    'tabulate',
+    'tabulate @ git+https://github.com/astanin/python-tabulate.git@master',
     'packaging'
 ]
 
